@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚡ Shadow System
 
-## Getting Started
+AI + Growth Intelligence • Demo system for **Minted Engineering**.
 
-First, run the development server:
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-green?logo=vercel)](https://shadow-system.vercel.app)  
+[![Watch Loom](https://img.shields.io/badge/Walkthrough-Loom-blue?logo=loom)](https://loom.com/share/your-video-link)
+
+<p align="center">
+  <img src="screenshot.png" width="700" alt="Shadow System Screenshot">
+</p>
+
+---
+
+## 🚀 Quickstart (one screen, no scrolling)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+git clone https://github.com/Xixos/shadow-system.git
+cd shadow-system
+npm install     # install frontend deps
+npm run dev     # start Next.js on localhost:3000
+Optional (backend mock):
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+bash
+Copy
+Edit
+cd api
+pip install -r requirements.txt
+uvicorn main:app --reload
+🎬 Demo Script (90s flow)
+Seed → click Seed to generate synthetic users + events.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Select a user → inspect rank, streak, score, churn risk.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Rescore → click Rescore to update rank & risk; dashboard + insights refresh.
 
-## Learn More
+Insights → open the Growth Analytics panel to view logins, views, shares, purchases.
 
-To learn more about Next.js, take a look at the following resources:
+Keyboard shortcuts →
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+/ focus search
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1–4 change sort (risk, score, streak, rank)
 
-## Deploy on Vercel
+S reseed data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+R rescore selected user
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🛠 Tech
+Frontend: Next.js 14, React 18, TailwindCSS, Framer Motion
+
+Charts: Motion + custom sparklines
+
+Backend (mock): FastAPI + SQLite (optional toggle)
+
+Infra: Vercel (UI), GitHub Actions (CI)
+
+Extras: CSV export, demo seed generator, Discord/Slack webhook hooks (optional)
+
+⚖️ Notes
+All code/data here is synthetic — no private Minted or ECD data.
+
+Built as a demo artifact to showcase AI-driven growth pipelines, rank validation, and ops→eng instincts.
+
+Default mode is LLM_OFF (fast + free). Toggle possible with OpenAI/Bedrock keys.
+
+📩 Contact
+Seydina Diop (Rebel)
+LinkedIn • Portfolio • GitHub
