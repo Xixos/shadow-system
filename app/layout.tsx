@@ -5,6 +5,8 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [client] = useState(() => new QueryClient());
@@ -13,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <QueryClientProvider client={client}>
           {children}
+                  <Analytics />
           <Toaster position="top-right" />
         </QueryClientProvider>
       </body>
