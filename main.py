@@ -18,7 +18,6 @@ from sqlmodel import SQLModel, Field, Session, create_engine, select
 # -----------------------------------------------------------------------------
 class Settings(BaseSettings):
     WEBHOOK_URL: str | None = None
-    # Your .env is in the project root (same folder as main.py)
     class Config:
         env_file = ".env"
 
