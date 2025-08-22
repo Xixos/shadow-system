@@ -1,0 +1,125 @@
+/* app/globals.css */
+@import "tailwindcss";
+
+
+
+/* --------- your custom styles --------- */
+:root { color-scheme: dark; }
+body { @apply bg-[#0b0f13] text-zinc-200; }
+
+/* Layout tokens */
+.container { @apply mx-auto max-w-7xl px-3 sm:px-6; }
+.grid-gap { @apply gap-4; }
+
+/* Cards / chips / inputs */
+.card-sm { @apply rounded-xl border border-zinc-800 bg-[#11161c] shadow-lg; }
+.kpi     { @apply rounded-lg border border-zinc-800 bg-[#11161c] px-3 py-2 shadow; }
+.btn     { @apply h-9 px-4 rounded-md bg-zinc-800 hover:bg-zinc-700 text-sm font-medium transition-colors duration-200; }
+.input   { @apply h-9 px-3 rounded-md bg-zinc-900 border border-zinc-800 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all duration-200; }
+
+/* Typographic tweaks */
+.h1 { @apply text-2xl font-semibold tracking-wide; }
+.kpi b { @apply text-xl; }
+
+/* Table */
+.table-sm thead th { @apply py-2 font-medium; }
+.table-sm tbody td { @apply py-1.5; }
+/* keep these as raw CSS, not @apply */
+.table-sm th, .table-sm td { padding: 12px 16px; }
+.row-hover { @apply cursor-pointer hover:bg-zinc-900/50 transition-colors duration-200; }
+
+/* Skeleton */
+.skel {
+  background: linear-gradient(90deg,#0f1318 0%,#121820 50%,#0f1318 100%);
+  background-size: 200% 100%;
+  animation: skel 1.2s linear infinite;
+  border: 1px solid rgba(255,255,255,.06);
+}
+@keyframes skel { to { background-position: -200% 0; } }
+
+/* Enhanced Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(39, 39, 42, 0.3); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.5); border-radius: 4px; transition: background-color 0.2s; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.7); }
+.custom-scrollbar::-webkit-scrollbar-corner { background: transparent; }
+/* Firefox scrollbar */
+.custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(16, 185, 129, 0.5) rgba(39, 39, 42, 0.3); }
+
+/* Enhanced Gradient Backgrounds */
+.gradient-bg-1 { background: linear-gradient(135deg, rgba(16,185,129,.1) 0%, rgba(59,130,246,.1) 50%, rgba(147,51,234,.1) 100%); }
+.gradient-bg-2 { background: linear-gradient(135deg, rgba(16,185,129,.05) 0%, rgba(59,130,246,.05) 100%); }
+
+/* Backdrop blur enhancements */
+.backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+
+/* Keyboard shortcuts styling */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Enhanced focus styles */
+.input:focus { box-shadow: 0 0 0 1px rgba(16,185,129,.5), 0 0 0 3px rgba(16,185,129,.1); }
+
+/* Glow effects */
+.glow-emerald { box-shadow: 0 0 20px rgba(16,185,129,.3); }
+.glow-blue    { box-shadow: 0 0 20px rgba(59,130,246,.3); }
+
+/* Enhanced animations */
+@keyframes pulse-glow {
+  0%,100% { opacity: 1; box-shadow: 0 0 5px rgba(16,185,129,.5); }
+  50% { opacity: .8; box-shadow: 0 0 20px rgba(16,185,129,.8), 0 0 30px rgba(16,185,129,.4); }
+}
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* Grid pattern animation */
+@keyframes grid-move { 0% { transform: translate(0,0); } 100% { transform: translate(50px,50px); } }
+.animate-grid { animation: grid-move 20s linear infinite; }
+
+/* Floating particles */
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(0); }
+  33% { transform: translateY(-10px) rotate(120deg); }
+  66% { transform: translateY(5px) rotate(240deg); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+/* Enhanced hover effects */
+.hover-lift { transition: transform .2s ease-out, box-shadow .2s ease-out; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+
+/* Gradient text effects */
+.gradient-text-emerald {
+  background: linear-gradient(135deg,#10b981,#34d399);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.gradient-text-multi {
+  background: linear-gradient(135deg,#10b981,#3b82f6,#8b5cf6);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* Loading states */
+@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+.shimmer { background: linear-gradient(90deg,#0f1318 0%,#121820 50%,#0f1318 100%); background-size: 1000px 100%; animation: shimmer 2s ease-in-out infinite; }
+
+/* Enhanced border animations */
+@keyframes border-glow { 0%,100% { border-color: rgba(39,39,42,1); } 50% { border-color: rgba(16,185,129,.5); } }
+.animate-border-glow { animation: border-glow 3s ease-in-out infinite; }
+
+/* Table specific styles */
+table { border-collapse: separate; border-spacing: 0; }
+tbody tr { position: relative; }
+tbody tr:hover { background-color: rgba(39,39,42,.3); }
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .card-sm { @apply p-4; }
+  .input { @apply h-9; }
+  .btn   { @apply h-9; }
+  table  { font-size: .875rem; }
+  .table-sm th, .table-sm td { padding: 8px 12px; }
+}
