@@ -2,25 +2,34 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * Typed localStorage hook with SSR safety.
+ */
 export default function useLocalStorage<T>(key: string, initial: T) {
-  const [value, setValue] = useState<T>(initial);
+  const [value, setValue] = useState<T>(() => initial);
 
   // Read once on mount (guard for SSR)
   useEffect(() => {
+    if (typeof window === "undefined") return;
     try {
-      if (typeof window === "undefined") return;
       const raw = window.localStorage.getItem(key);
-      if (raw !== null) setValue(JSON.parse(raw));
-    } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (raw !== null) {
+        const parsed = JSON.parse(raw) as T;
+        setValue(parsed);
+      }
+    } catch {
+      // ignore parse/storage errors
+    }
   }, [key]);
 
   // Persist whenever it changes
   useEffect(() => {
+    if (typeof window === "undefined") return;
     try {
-      if (typeof window === "undefined") return;
       window.localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
+    } catch {
+      // ignore quota/storage errors
+    }
   }, [key, value]);
 
   return [value, setValue] as const;

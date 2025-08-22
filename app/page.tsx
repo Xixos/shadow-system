@@ -1,8 +1,14 @@
-// app/page.tsx
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { exportCsv } from "@/lib/exportCsv";
 
 /* ---------------- Types ---------------- */
 type MockUser = {
@@ -23,6 +29,8 @@ type Insights = {
   };
   churn_risk_top: MockUser[];
 };
+
+type SortKey = "risk" | "score" | "streak" | "rank";
 
 /* ---------------- Env / API helpers ---------------- */
 const API = process.env.NEXT_PUBLIC_API_URL; // e.g. http://127.0.0.1:8000
@@ -45,7 +53,10 @@ function generateMockUsers(n = 100): MockUser[] {
       activity_score: score,
       churn_risk: Math.min(
         0.99,
-        Math.max(0.01, 1 - Math.tanh(score / 1200) + (Math.random() - 0.5) * 0.2)
+        Math.max(
+          0.01,
+          1 - Math.tanh(score / 1200) + (Math.random() - 0.5) * 0.2
+        )
       ),
     };
   });
@@ -57,7 +68,9 @@ function generateMockInsights(users: MockUser[]): Insights {
   const view = Math.floor(totalScore * 0.25) + 25_000 + Math.floor(Math.random() * 12_000);
   const share = Math.floor(totalScore * 0.05) + 5_000 + Math.floor(Math.random() * 5_000);
   const purchase = Math.floor(totalScore * 0.03) + 3_000 + Math.floor(Math.random() * 3_000);
-  const churn_risk_top = [...users].sort((a, b) => b.churn_risk - a.churn_risk).slice(0, 10);
+  const churn_risk_top = [...users]
+    .sort((a, b) => b.churn_risk - a.churn_risk)
+    .slice(0, 10);
   return { events: { login, view, share, purchase }, churn_risk_top };
 }
 
@@ -229,7 +242,7 @@ export default function EnhancedDashboard() {
   const [now, setNow] = useState("");
   const [qRaw, setQRaw] = useState("");
   const [q, setQ] = useState("");
-  const [sort, setSort] = useState<"risk" | "score" | "streak" | "rank">("risk");
+  const [sort, setSort] = useState<SortKey>("risk");
   const [selected, setSelected] = useState<MockUser | null>(null);
   const [auto, setAuto] = useState(true);
   const [isSeeding, setIsSeeding] = useState(false);
@@ -267,7 +280,7 @@ export default function EnhancedDashboard() {
   }, [qRaw]);
 
   // data load after mount
-  async function loadData() {
+  const loadData = useCallback(async () => {
     if (API) {
       try {
         const [u, i] = await Promise.all([
@@ -287,16 +300,16 @@ export default function EnhancedDashboard() {
     setUsers(freshUsers);
     setInsights(generateMockInsights(freshUsers));
     setDataSource("DEMO");
-  }
+  }, []);
+
   useEffect(() => {
     loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadData]);
 
   // derived list
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    const M: Record<string, keyof MockUser> = {
+    const M: Record<SortKey, keyof MockUser> = {
       rank: "current_rank",
       streak: "streak_days",
       score: "activity_score",
@@ -310,28 +323,7 @@ export default function EnhancedDashboard() {
   }, [users, q, sort]);
 
   // keyboard shortcuts
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "/" && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        searchRef.current?.focus();
-      }
-      if (e.key === "Escape") setSelected(null);
-      if (e.key.toLowerCase() === "a") setAuto((a) => !a);
-      if (e.key === "1") setSort("risk");
-      if (e.key === "2") setSort("score");
-      if (e.key === "3") setSort("streak");
-      if (e.key === "4") setSort("rank");
-      if (e.key.toLowerCase() === "s") handleSeed();
-      if (e.key.toLowerCase() === "c") downloadCSV(filtered);
-      if (e.key.toLowerCase() === "r" && selected) handleRescore(selected);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [filtered, selected]);
-
-  // seed (API OR DEMO)
-  async function handleSeed() {
+  const handleSeed = useCallback(async () => {
     setIsSeeding(true);
     try {
       if (API) {
@@ -349,22 +341,96 @@ export default function EnhancedDashboard() {
       setSelected(null);
       setQRaw("");
     }
-  }
+  }, [loadData]);
 
-  // csv export
-  function downloadCSV(rows: any[]) {
-    const headers = ["email", "current_rank", "streak_days", "activity_score", "churn_risk"];
-    const csv = [headers.join(","), ...rows.map((r) => headers.map((h) => r[h]).join(","))].join(
-      "\n"
+  const handleRescore = useCallback(
+    async (user: MockUser) => {
+      setRescoringId(user.id);
+      try {
+        if (API) {
+          const updated = await fetchJSON<MockUser>(
+            `${API}/users/${user.id}/rescore`,
+            { method: "POST" }
+          );
+          setUsers((prev) => {
+            const next = prev.map((u) => (u.id === user.id ? updated : u));
+            setInsights(generateMockInsights(next));
+            if (selected?.id === user.id) {
+              setSelected(next.find((u) => u.id === user.id) || null);
+            }
+            return next;
+          });
+        } else {
+          // Demo update
+          const factor = 1 + (Math.random() * 0.3 - 0.15);
+          const updated: MockUser = {
+            ...user,
+            activity_score: Math.max(0, Math.round(user.activity_score * factor)),
+            streak_days:
+              Math.random() < 0.4 ? user.streak_days + 1 : Math.max(0, user.streak_days - 1),
+            current_rank: Math.max(
+              1,
+              Math.min(100, user.current_rank + Math.round(Math.random() * 10 - 5))
+            ),
+            churn_risk: Math.min(
+              0.99,
+              Math.max(
+                0.01,
+                1 -
+                  Math.tanh(Math.max(0, Math.round(user.activity_score * factor)) / 1200) +
+                  (Math.random() - 0.5) * 0.18
+              )
+            ),
+          };
+          setUsers((prev) => {
+            const next = prev.map((u) => (u.id === user.id ? updated : u));
+            setInsights(generateMockInsights(next));
+            if (selected?.id === user.id) {
+              setSelected(next.find((u) => u.id === user.id) || null);
+            }
+            return next;
+          });
+        }
+      } finally {
+        setRescoringId(null);
+      }
+    },
+    [selected]
+  );
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "/" && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+      if (e.key === "Escape") setSelected(null);
+      if (e.key.toLowerCase() === "a") setAuto((a) => !a);
+      if (e.key === "1") setSort("risk");
+      if (e.key === "2") setSort("score");
+      if (e.key === "3") setSort("streak");
+      if (e.key === "4") setSort("rank");
+      if (e.key.toLowerCase() === "s") handleSeed();
+      if (e.key.toLowerCase() === "c")
+        exportCsv(
+          filtered,
+          ["email", "current_rank", "streak_days", "activity_score", "churn_risk"],
+          "users.csv"
+        );
+      if (e.key.toLowerCase() === "r" && selected) handleRescore(selected);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [filtered, selected, handleSeed, handleRescore]);
+
+  // CSV export (button handler)
+  const onDownloadCsv = useCallback(() => {
+    exportCsv(
+      filtered,
+      ["email", "current_rank", "streak_days", "activity_score", "churn_risk"],
+      "users.csv"
     );
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "users.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  }, [filtered]);
 
   // tiny spark series
   const sampleTrend = (u: MockUser) => {
@@ -378,63 +444,14 @@ export default function EnhancedDashboard() {
     return out;
   };
 
-  // strictly typed totals to avoid reduce(unknown)
-  const totalEvents: number = Object.values(insights.events).reduce(
+  // typed totals
+  const totalEvents = (Object.values(insights.events) as number[]).reduce(
     (a, b) => a + b,
     0
   );
   const avgRisk = users.length
     ? (users.reduce((a, u) => a + u.churn_risk, 0) / users.length).toFixed(2)
     : "—";
-
-  // --- Real rescore with per-row loading & fresh insights ---
-  async function handleRescore(user: MockUser) {
-    setRescoringId(user.id);
-    try {
-      if (API) {
-        const updated = await fetchJSON<MockUser>(`${API}/users/${user.id}/rescore`, {
-          method: "POST",
-        });
-        setUsers((prev) => {
-          const next = prev.map((u) => (u.id === user.id ? updated : u));
-          setInsights(generateMockInsights(next));
-          if (selected?.id === user.id) {
-            const s = next.find((u) => u.id === user.id) || null;
-            setSelected(s);
-          }
-          return next;
-        });
-      } else {
-        // Demo update
-        const factor = 1 + (Math.random() * 0.3 - 0.15);
-        const updated: MockUser = {
-          ...user,
-          activity_score: Math.max(0, Math.round(user.activity_score * factor)),
-          streak_days:
-            Math.random() < 0.4 ? user.streak_days + 1 : Math.max(0, user.streak_days - 1),
-          current_rank: Math.max(
-            1,
-            Math.min(100, user.current_rank + Math.round(Math.random() * 10 - 5))
-          ),
-          churn_risk: Math.min(
-            0.99,
-            Math.max(0.01, 1 - Math.tanh((Math.max(0, Math.round(user.activity_score * factor))) / 1200) + (Math.random() - 0.5) * 0.18)
-          ),
-        };
-        setUsers((prev) => {
-          const next = prev.map((u) => (u.id === user.id ? updated : u));
-          setInsights(generateMockInsights(next));
-          if (selected?.id === user.id) {
-            const s = next.find((u) => u.id === user.id) || null;
-            setSelected(s);
-          }
-          return next;
-        });
-      }
-    } finally {
-      setRescoringId(null);
-    }
-  }
 
   return (
     <div className="min-h-screen bg-[#0b0f13] relative">
@@ -561,7 +578,7 @@ export default function EnhancedDashboard() {
               <motion.select
                 className="input w-24 text-xs bg-zinc-900/50"
                 value={sort}
-                onChange={(e) => setSort(e.target.value as any)}
+                onChange={(e) => setSort(e.target.value as SortKey)}
                 whileFocus={{ scale: 1.02 }}
                 aria-label="Sort metric"
               >
@@ -595,7 +612,7 @@ export default function EnhancedDashboard() {
 
               <motion.button
                 className="btn text-xs h-7 px-2 bg-emerald-600 hover:bg-emerald-500"
-                onClick={() => downloadCSV(filtered)}
+                onClick={onDownloadCsv}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="Download CSV"
@@ -754,7 +771,7 @@ export default function EnhancedDashboard() {
                                     </div>
                                     <div className="text-xs text-zinc-400">
                                       <span className="mr-2">High Risk Users:</span>
-                                      {insights.churn_risk_top.slice(0, 3).map((t) => (
+                                      {insights.churn_risk_top.slice(0, 3).map((t: MockUser) => (
                                         <span key={t.id} className="mr-3">
                                           {t.email.split("@")[0]}{" "}
                                           <span className="ml-1">
@@ -817,9 +834,8 @@ export default function EnhancedDashboard() {
               selected
             </span>
             <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Shadow System • AI + Growth Intelligence • Demo (LLM Optional)
+              Shadow System • AI + Growth Intelligence • Demo (LLM Optional)
             </span>
-
           </div>
         </motion.footer>
       </main>
