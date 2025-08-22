@@ -3,7 +3,7 @@
 **AI-powered Growth Intelligence Dashboard** — Synthetic user analytics, churn prediction, and growth insights in a modern web interface.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://shadow-system-psi.vercel.app/)
-[![Loom Walkthrough](https://img.shields.io/badge/Loom-Walkthrough-ff5a5f?style=for-the-badge&logo=loom)](https://drive.google.com/file/d/1d46XNO_qqHr1ZA6BWbYOsT1OxOEH6YZl/view?usp=sharing)
+[![Loom Walkthrough](https://img.shields.io/badge/Loom-Walkthrough-ff5a5f?style=for-the-badge&logo=loom)](https://www.loom.com/share/03d20338250d4d699502ff817591a1de?sid=f2f8c111-814a-4ead-a60a-cb42db4f143f)
 
 <div align="center">
   <img src="./demo/Screenshot.png" alt="Shadow System Dashboard" width="800" />
@@ -59,4 +59,4 @@ npm install && npm run dev
 ## Contact
 
 **Seydina Diop**  
-[LinkedIn](https://www.linkedin.com/in/seydina-diop/) • [GitHub](https://github.com/Xixos) • [Portfolio](https://seydina-diop.dev)
+[LinkedIn](https://www.linkedin.com/in/seydina-diop/) • [GitHub](https://github.com/Xixos) 
