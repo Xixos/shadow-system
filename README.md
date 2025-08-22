@@ -1,68 +1,62 @@
-# ⚡ Shadow System
+# Shadow System ⚡
 
-AI + Growth Intelligence • Demo system for **Minted Engineering**.
+**AI-powered Growth Intelligence Dashboard** — Synthetic user analytics, churn prediction, and growth insights in a modern web interface.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-green?logo=vercel)](https://shadow-system.vercel.app)  
-[![Watch Loom](https://img.shields.io/badge/Walkthrough-Loom-blue?logo=loom)](https://loom.com/share/your-video-link)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://shadow-system.vercel.app)
+[![Loom Walkthrough](https://img.shields.io/badge/Loom-Walkthrough-ff5a5f?style=for-the-badge&logo=loom)](https://loom.com/share/your-demo-link)
 
-<p align="center">
-  <img src="screenshot.png" width="700" alt="Shadow System Screenshot">
-</p>
+<div align="center">
+  <img src="./demo/screenshot.png" alt="Shadow System Dashboard" width="800" />
+  <p><em>Screenshot placeholder - Dashboard with synthetic user analytics and predictive scoring</em></p>
+</div>
 
 ---
 
-## 🚀 Quickstart (one screen, no scrolling)
+## 🚀 Quickstart
 
 ```bash
 git clone https://github.com/Xixos/shadow-system.git
 cd shadow-system
-npm install     # install frontend deps
-npm run dev     # start Next.js on localhost:3000
-Optional (backend mock):
+npm install && npm run dev
+# Open http://localhost:3000
+```
 
-bash
-Copy
-Edit
-cd api
-pip install -r requirements.txt
-uvicorn main:app --reload
-🎬 Demo Script (90s flow)
-Seed → click Seed to generate synthetic users + events.
+## 🎬 Demo Script
 
-Select a user → inspect rank, streak, score, churn risk.
+• **Seed Data** → Click "Generate Users" to populate synthetic user profiles and events  
+• **Select User** → Choose a user from the table to view detailed analytics and risk scores  
+• **Rescore** → Hit the predictive rescore button to simulate ML model updates  
+• **Insights** → Explore growth charts, churn predictions, and sparkline trends  
+• **Shortcuts** → Use `Cmd/Ctrl + K` for quick actions, `Cmd/Ctrl + E` for CSV export
 
-Rescore → click Rescore to update rank & risk; dashboard + insights refresh.
+## 🛠️ Tech Stack
 
-Insights → open the Growth Analytics panel to view logins, views, shares, purchases.
+**Frontend:**
+• Next.js 14 + React 18 + TypeScript  
+• Tailwind CSS + Framer Motion animations  
+• Recharts for data visualization  
+• Lucide React icons
 
-Keyboard shortcuts →
+**Backend (Optional):**
+• FastAPI + SQLite for persistent data  
+• Python-based synthetic data generation  
+• RESTful API endpoints
 
-/ focus search
+**Development:**
+• ESLint + Prettier for code quality  
+• Git hooks with Husky  
+• Vercel deployment ready
 
-1–4 change sort (risk, score, streak, rank)
+## 📝 Notes
 
-S reseed data
+• All user data is **synthetic** — no real personal information is used or stored  
+• `LLM_OFF=true` by default for privacy-focused demo environment  
+• Safe for public demos and portfolio showcasing  
+• Backend integration is optional; frontend works standalone with mock data
 
-R rescore selected user
+---
 
-🛠 Tech
-Frontend: Next.js 14, React 18, TailwindCSS, Framer Motion
+## Contact
 
-Charts: Motion + custom sparklines
-
-Backend (mock): FastAPI + SQLite (optional toggle)
-
-Infra: Vercel (UI), GitHub Actions (CI)
-
-Extras: CSV export, demo seed generator, Discord/Slack webhook hooks (optional)
-
-⚖️ Notes
-All code/data here is synthetic — no private Minted or ECD data.
-
-Built as a demo artifact to showcase AI-driven growth pipelines, rank validation, and ops→eng instincts.
-
-Default mode is LLM_OFF (fast + free). Toggle possible with OpenAI/Bedrock keys.
-
-📩 Contact
-Seydina Diop (Rebel)
-LinkedIn • Portfolio • GitHub
+**Seydina Diop**  
+[LinkedIn](https://www.linkedin.com/in/seydina-diop/) • [GitHub](https://github.com/Xixos) • [Portfolio](https://seydina-diop.dev)
