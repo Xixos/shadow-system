@@ -3,7 +3,7 @@
 **AI-powered Growth Intelligence Dashboard** — Synthetic user analytics, churn prediction, and growth insights in a modern web interface.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://shadow-system-psi.vercel.app/)
-[![Loom Walkthrough](https://img.shields.io/badge/Loom-Walkthrough-ff5a5f?style=for-the-badge&logo=loom)](https://drive.google.com/file/d/1rmHM3_iaQb0YiDIqlypC4y9Q5IO9bubd/view?usp=sharing)
+[![Loom Walkthrough](https://img.shields.io/badge/Loom-Walkthrough-ff5a5f?style=for-the-badge&logo=loom)](https://drive.google.com/file/d/1d46XNO_qqHr1ZA6BWbYOsT1OxOEH6YZl/view?usp=sharing)
 
 <div align="center">
   <img src="./demo/Screenshot.png" alt="Shadow System Dashboard" width="800" />
